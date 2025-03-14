@@ -85,18 +85,21 @@ void main() {
           'title': 'code',
           'description': 'learn java',
           'isCompleted': false,
+          'time':'12:00',
           'dueDate': 'today',
         };
         var todo2 = {
           'title': 'code',
           'description': 'learn python',
           'isCompleted': false,
+          'time':'12:00',
           'dueDate': 'today',
         };
         var todo3 = {
           'title': 'code',
           'description': 'learn mulesoft',
           'isCompleted': false,
+          'time':'12:00',
           'dueDate': 'today',
         };
         String tid = await todoRepository.addTodo(cid, todo1);
@@ -180,6 +183,7 @@ void main() {
           TodoModel.fromMap({
             'id': tid,
             'title': 'code',
+            'time':'12:00',
             'description': 'learn java',
             'isCompleted': false,
             'dueDate': 'today',
@@ -190,6 +194,7 @@ void main() {
         expect(docData, {
           'id': tid,
           'title': 'code',
+          'time':'12:00',
           'description': 'learn java',
           'isCompleted': false,
           'dueDate': 'today',

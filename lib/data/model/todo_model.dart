@@ -5,6 +5,7 @@ class TodoModel extends Equatable {
   final String title;
   final String description;
   final String dueDate;
+  final String time;
   final bool isCompleted;
 
   const TodoModel({
@@ -12,6 +13,7 @@ class TodoModel extends Equatable {
     required this.title,
     required this.description,
     required this.dueDate,
+    required this.time,
     required this.isCompleted,
   });
 
@@ -21,6 +23,7 @@ class TodoModel extends Equatable {
       title: data['title'],
       description: data['description'],
       dueDate: data['dueDate'],
+      time: data['time'],
       isCompleted: data['isCompleted'],
     );
   }
@@ -31,6 +34,7 @@ class TodoModel extends Equatable {
       'title': title,
       'description': description,
       'dueDate': dueDate,
+      'time': time,
       'isCompleted': isCompleted,
     };
   }
@@ -40,6 +44,7 @@ class TodoModel extends Equatable {
     String? title,
     String? description,
     String? dueDate,
+    String? time,
     bool? isCompleted,
   }) {
     return TodoModel(
@@ -47,10 +52,11 @@ class TodoModel extends Equatable {
       title: title ?? this.title,
       description: description ?? this.description,
       dueDate: dueDate ?? this.dueDate,
+      time: time ?? this.time,
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, description, dueDate, isCompleted];
+  List<Object?> get props => [id, title, description, dueDate, time, isCompleted];
 }

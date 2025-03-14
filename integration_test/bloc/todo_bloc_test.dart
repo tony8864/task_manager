@@ -62,6 +62,7 @@ void main() {
       categoryModelMap = {'name': 'work'};
       todoModelMap = {
         'title': 'code',
+        'time':'12:00',
         'description': 'learn python',
         'isCompleted': false,
         'dueDate': 'today',
