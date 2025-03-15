@@ -15,26 +15,6 @@ class FirebaseAuthRepository implements AuthRepository {
   User get loggedUser => _firebaseAuth.currentUser!;
 
   @override
-  Future<void> login(String email, String password) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-email') {
-        throw BadEmailFormatException();
-      } else if (e.code == 'wrong-password' || e.code == 'user-not-found') {
-        throw InvalidCredentialsException();
-      }
-    } catch (e) {
-      throw Exception('Failed to login user: $e');
-    }
-  }
-
-  @override
-  Future<void> logout() async {
-    await _firebaseAuth.signOut();
-  }
-
-  @override
   Future<void> register(
     Map<String, dynamic> userMap,
     String password,
@@ -63,6 +43,26 @@ class FirebaseAuthRepository implements AuthRepository {
     } catch (e) {
       throw Exception('Failed to register user.');
     }
+  }
+
+  @override
+  Future<void> login(String email, String password) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        throw BadEmailFormatException();
+      } else if (e.code == 'wrong-password' || e.code == 'user-not-found') {
+        throw InvalidCredentialsException();
+      }
+    } catch (e) {
+      throw Exception('Failed to login user: $e');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    await _firebaseAuth.signOut();
   }
 
   @override

@@ -29,3 +29,5 @@ final class LoginEvent extends AuthEvent {
 }
 
 final class LogoutEvent extends AuthEvent {}
+
+final class ResetAuthStateEvent extends AuthEvent {}

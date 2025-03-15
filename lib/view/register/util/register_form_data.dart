@@ -15,6 +15,11 @@ class RegisterFormData extends InheritedWidget {
     required this.confirmPasswordController,
   });
 
+  String get name => nameController.text.trim();
+  String get email => emailController.text.trim();
+  String get password => passwordController.text.trim();
+  String get confirmPassword => confirmPasswordController.text.trim();
+  
   static RegisterFormData? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<RegisterFormData>();
   }

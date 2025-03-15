@@ -13,7 +13,7 @@ class TaskManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: _themeData(),
+      theme: _themeData(),   
       routerConfig: onboardingRouter,
     );
   }

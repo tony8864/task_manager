@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
 import 'package:task_manager/view/onboarding/widgets/title_widget.dart';
 
@@ -22,6 +24,7 @@ class OnboardingView extends StatelessWidget {
               textColor: Colors.black,
               backgroundColor: Theme.of(context).colorScheme.secondary,
               onPressed: () {
+                context.read<AuthBloc>().add(ResetAuthStateEvent());
                 context.go('/register');
               },
             ),

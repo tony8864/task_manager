@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/view/register/util/register_form_data.dart';
 
 class RegisterEmailField extends StatelessWidget {
   const RegisterEmailField({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +13,27 @@ class RegisterEmailField extends StatelessWidget {
       width: MediaQuery.of(context).size.width - 100,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_emailFieldTitle(), _emailField(context)],
+        children: [_emailFieldTitle(), _emailAreaBuilder()],
       ),
     );
   }
 
   Widget _emailFieldTitle() {
     return Text('Email', style: GoogleFonts.merriweather(fontSize: 20));
+  }
+
+  Widget _emailAreaBuilder() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return _emailArea(context, state);
+      },
+    );
+  }
+
+  Widget _emailArea(BuildContext context, AuthState state) {
+    return Column(
+      children: [_emailField(context), const SizedBox(height: 4), _passwordError(state)],
+    );
   }
 
   Widget _emailField(BuildContext context) {
@@ -28,6 +43,27 @@ class RegisterEmailField extends StatelessWidget {
         controller: RegisterFormData.of(context)!.emailController,
         decoration: InputDecoration(hintText: 'Enter your email'),
       ),
+    );
+  }
+
+  Widget _passwordError(AuthState authState) {
+    String? errorMessage;
+
+    if (authState is Unauthenticated) {
+      if (authState.status == UnauthenticatedStatus.badEmailFormat) {
+        errorMessage = 'Bad email format';
+      } else if (authState.status == UnauthenticatedStatus.duplicateEmail) {
+        errorMessage = 'Email already in use';
+      }
+    }
+
+    return Container(
+      height: errorMessage != null ? 16 : 0,
+      alignment: Alignment.centerLeft,
+      child:
+          errorMessage != null
+              ? Text(errorMessage, style: GoogleFonts.merriweather(fontSize: 13, color: Colors.red))
+              : null,
     );
   }
 }

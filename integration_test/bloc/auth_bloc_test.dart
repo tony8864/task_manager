@@ -50,7 +50,14 @@ void main() {
         build: () => authBloc,
         act: (bloc) => bloc.add(AuthSubscriptionEvent()),
         wait: const Duration(milliseconds: 2000),
-        expect: () => [isA<Unauthenticated>()],
+        expect:
+            () => [
+              isA<Unauthenticated>().having(
+                (feat) => feat.status,
+                'status',
+                UnauthenticatedStatus.initial,
+              ),
+            ],
       );
 
       blocTest(
@@ -75,9 +82,17 @@ void main() {
         wait: const Duration(milliseconds: 2000),
         expect:
             () => [
-              isA<Unauthenticated>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.initial,
+              ),
               isA<Authenticated>(),
-              isA<Unauthenticated>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.initial,
+              ),
               isA<Authenticated>(),
             ],
         tearDown: () async => await clearFirebase(),
@@ -91,7 +106,15 @@ void main() {
         setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
         act: (bloc) => bloc.add(LogoutEvent()),
         wait: const Duration(milliseconds: 2000),
-        expect: () => [isA<AuthLoading>(), isA<Unauthenticated>()],
+        expect:
+            () => [
+              isA<AuthLoading>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.initial,
+              ),
+            ],
         tearDown: () async {
           await authRepository.login(userModelMap['email'], 'test123');
           await clearFirebase();
@@ -113,7 +136,7 @@ void main() {
       );
 
       blocTest(
-        'should emit Unauthenticated on user register',
+        'should emit UnauthenticatedStatus.passwordMismatch on user register',
         build: () => authBloc,
         act:
             (bloc) => bloc.add(
@@ -124,7 +147,80 @@ void main() {
               ),
             ),
         wait: const Duration(milliseconds: 2000),
-        expect: () => [isA<AuthLoading>(), isA<Unauthenticated>()],
+        expect:
+            () => [
+              isA<AuthLoading>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.passwordMismatch,
+              ),
+            ],
+      );
+
+      blocTest(
+        'should emit UnauthenticatedStatus.weakPassword on user register',
+        build: () => authBloc,
+        act:
+            (bloc) => bloc.add(
+              RegisterEvent(userMap: userModelMap, password: '123', confirmPassword: '123'),
+            ),
+        wait: const Duration(milliseconds: 2000),
+        expect:
+            () => [
+              isA<AuthLoading>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.weakPassword,
+              ),
+            ],
+      );
+
+      blocTest(
+        'should emit UnauthenticatedStatus.duplicateEmail on user register',
+        build: () => authBloc,
+        setUp: () async {
+          await authRepository.register(userModelMap, 'test123', 'test123');
+        },
+        act:
+            (bloc) => bloc.add(
+              RegisterEvent(userMap: userModelMap, password: 'test123', confirmPassword: 'test123'),
+            ),
+        wait: const Duration(milliseconds: 2000),
+        expect:
+            () => [
+              isA<AuthLoading>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.duplicateEmail,
+              ),
+            ],
+        tearDown: () async => await clearFirebase(),
+      );
+
+      blocTest(
+        'should emit UnauthenticatedStatus.badEmailFormat on user register',
+        build: () => authBloc,
+        act:
+            (bloc) => bloc.add(
+              RegisterEvent(
+                userMap: {'name': 'tony', 'email': 'tonyemail.com'},
+                password: '123',
+                confirmPassword: '123',
+              ),
+            ),
+        wait: const Duration(milliseconds: 2000),
+        expect:
+            () => [
+              isA<AuthLoading>(),
+              isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.badEmailFormat,
+              ),
+            ],
       );
     });
 
@@ -140,12 +236,30 @@ void main() {
       );
 
       blocTest(
-        'should emit Unauthenticated on login',
+        'should emit UnauthenticatedStatus.invalidCredentials on login',
         setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
         build: () => authBloc,
         act: (bloc) => bloc.add(LoginEvent(email: userModelMap['email'], password: 'test1234')),
         wait: const Duration(milliseconds: 2000),
-        expect: () => [isA<AuthLoading>(), isA<Unauthenticated>()],
+        expect: () => [isA<AuthLoading>(), isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.invalidCredentials,
+              ),],
+        tearDown: () async => await clearFirebase(),
+      );
+
+      blocTest(
+        'should emit UnauthenticatedStatus.invalidCredentials on login',
+        setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
+        build: () => authBloc,
+        act: (bloc) => bloc.add(LoginEvent(email: 'tonyemail.com', password: 'test1234')),
+        wait: const Duration(milliseconds: 2000),
+        expect: () => [isA<AuthLoading>(), isA<Unauthenticated>().having(
+                (e) => e.status,
+                'status',
+                UnauthenticatedStatus.badEmailFormat,
+              ),],
         tearDown: () async => await clearFirebase(),
       );
     });
