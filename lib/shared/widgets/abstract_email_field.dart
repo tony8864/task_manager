@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
-import 'package:task_manager/view/login/util/login_form_data.dart';
 
-class LoginEmailField extends StatelessWidget {
-  const LoginEmailField({super.key});
+class AbstractEmailField extends StatelessWidget {
+  final TextEditingController controller;
+  final bool isRegister;
+
+  const AbstractEmailField({super.key, required this.controller, required this.isRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class LoginEmailField extends StatelessWidget {
     return SizedBox(
       height: 30,
       child: TextFormField(
-        controller: LoginFormData.of(context)!.emailController,
+        controller: controller,
         decoration: InputDecoration(hintText: 'Enter your email'),
       ),
     );
@@ -50,6 +52,8 @@ class LoginEmailField extends StatelessWidget {
     if (authState is Unauthenticated) {
       if (authState.status == UnauthenticatedStatus.badEmailFormat) {
         errorMessage = 'Bad email format';
+      } else if (authState.status == UnauthenticatedStatus.duplicateEmail && isRegister) {
+        errorMessage = 'Email already in use';
       }
     }
 

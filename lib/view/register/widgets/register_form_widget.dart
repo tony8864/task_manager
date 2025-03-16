@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
+import 'package:task_manager/bloc/register_form_bloc/register_form_bloc.dart';
+import 'package:task_manager/shared/widgets/abstract_email_field.dart';
+import 'package:task_manager/shared/widgets/abstract_password_field.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
-import 'package:task_manager/view/register/widgets/text_fields/register_confirm_password_field.dart';
-import 'package:task_manager/view/register/widgets/text_fields/register_email_field.dart';
 import 'package:task_manager/view/register/util/register_form_data.dart';
-import 'package:task_manager/view/register/widgets/text_fields/register_firstname_field.dart';
-import 'package:task_manager/view/register/widgets/text_fields/register_password_field.dart';
 
 class RegisterFormWidget extends StatelessWidget {
   const RegisterFormWidget({super.key});
@@ -74,19 +73,83 @@ class _FormContent extends StatelessWidget {
     return Column(
       children: [
         const Spacer(flex: 2),
-        RegisterFirstnameField(),
+        _nameField(context),
         const Spacer(flex: 1),
-        RegisterEmailField(),
+        _emailField(RegisterFormData.of(context)!.emailController),
         const Spacer(flex: 1),
-        RegisterPasswordField(),
+        _passwordField(RegisterFormData.of(context)!.passwordController),
         const Spacer(flex: 1),
-        RegisterConfirmPasswordField(),
+        _confirmPassword(RegisterFormData.of(context)!.confirmPasswordController),
         const Spacer(flex: 2),
         _submitButton(context),
         const Spacer(flex: 1),
         _signInRedirect(context),
         const Spacer(flex: 3),
       ],
+    );
+  }
+
+  Widget _nameField(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width - 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [_firstnameFieldTitle(), _firstnameField(context)],
+      ),
+    );
+  }
+
+  Widget _firstnameFieldTitle() {
+    return Text('First name', style: GoogleFonts.merriweather(fontSize: 20));
+  }
+
+  Widget _firstnameField(BuildContext context) {
+    return SizedBox(
+      height: 30,
+      child: TextFormField(
+        controller: RegisterFormData.of(context)!.nameController,
+        decoration: InputDecoration(hintText: 'Enter your first name'),
+      ),
+    );
+  }
+
+  Widget _emailField(TextEditingController controller) {
+    return AbstractEmailField(controller: controller, isRegister: true);
+  }
+
+  Widget _passwordField(TextEditingController controller) {
+    return BlocBuilder<RegisterFormBloc, RegisterFormState>(
+      builder: (context, state) {
+        return AbstractPasswordField(
+          fieldTitle: 'Password',
+          controller: controller,
+          unauthenticatedStatus: UnauthenticatedStatus.weakPassword,
+          errorText: 'Weak password',
+          hintText: 'Enter a strong password',
+          isVisible: state.isPasswordVisible,
+          onVisibilityToggle: () {
+            context.read<RegisterFormBloc>().add(ToggleRegisterPasswordVisibilityEvent());
+          },
+        );
+      },
+    );
+  }
+
+  Widget _confirmPassword(TextEditingController controller) {
+    return BlocBuilder<RegisterFormBloc, RegisterFormState>(
+      builder: (context, state) {
+        return AbstractPasswordField(
+          fieldTitle: 'Confirm Password',
+          controller: controller,
+          unauthenticatedStatus: UnauthenticatedStatus.passwordMismatch,
+          errorText: 'Passwords don\'t match',
+          hintText: 'Retype your password',
+          isVisible: state.isConfirmPasswordVisible,
+          onVisibilityToggle: () {
+            context.read<RegisterFormBloc>().add(ToggleRegisterConfirmPasswordVisibilityEvent());
+          },
+        );
+      },
     );
   }
 

@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
+import 'package:task_manager/bloc/login_form_bloc/login_form_bloc.dart';
+import 'package:task_manager/shared/widgets/abstract_email_field.dart';
+import 'package:task_manager/shared/widgets/abstract_password_field.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
 import 'package:task_manager/view/login/util/login_form_data.dart';
-import 'package:task_manager/view/login/widgets/text_fields/login_email_field.dart';
-import 'package:task_manager/view/login/widgets/text_fields/login_password_field.dart';
 
 class LoginFormWidget extends StatelessWidget {
   const LoginFormWidget({super.key});
@@ -65,15 +66,37 @@ class _FormContent extends StatelessWidget {
     return Column(
       children: [
         const Spacer(flex: 2),
-        LoginEmailField(),
+        _emailField(LoginFormData.of(context)!.emailController),
         const Spacer(flex: 1),
-        LoginPasswordField(),
+        _passwordField(LoginFormData.of(context)!.passwordController),
         const Spacer(flex: 2),
         _submitButton(context),
         const Spacer(flex: 1),
         _signUpRedirect(context),
         const Spacer(flex: 3),
       ],
+    );
+  }
+
+  Widget _emailField(TextEditingController controller) {
+    return AbstractEmailField(controller: controller, isRegister: false);
+  }
+
+  Widget _passwordField(TextEditingController controller) {
+    return BlocBuilder<LoginFormBloc, LoginFormState>(
+      builder: (context, state) {
+        return AbstractPasswordField(
+          fieldTitle: 'Password',
+          controller: controller,
+          unauthenticatedStatus: UnauthenticatedStatus.invalidCredentials,
+          errorText: 'Invalid credentials',
+          hintText: 'Enter a strong password',
+          isVisible: state.isPasswordVisible,
+          onVisibilityToggle: () {
+            context.read<LoginFormBloc>().add(ToggleLoginPasswordVisibilityEvent());
+          },
+        );
+      },
     );
   }
 
