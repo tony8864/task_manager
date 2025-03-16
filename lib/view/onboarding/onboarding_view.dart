@@ -35,6 +35,7 @@ class OnboardingView extends StatelessWidget {
               borderColor: Colors.white,
               backgroundColor: Theme.of(context).colorScheme.primary,
               onPressed: () {
+                context.read<AuthBloc>().add(ResetAuthStateEvent());
                 context.go('/login');
               },
             ),

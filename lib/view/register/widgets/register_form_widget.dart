@@ -105,10 +105,10 @@ class _FormContent extends StatelessWidget {
 
   bool _areTextFieldsEmpty(BuildContext context) {
     final formData = RegisterFormData.of(context)!;
-    return formData.name.trim().isEmpty ||
-        formData.email.trim().isEmpty ||
-        formData.password.trim().isEmpty ||
-        formData.confirmPassword.trim().isEmpty;
+    return formData.name.isEmpty ||
+        formData.email.isEmpty ||
+        formData.password.isEmpty ||
+        formData.confirmPassword.isEmpty;
   }
 
   void _showErrorSnackbar(BuildContext context) {
@@ -142,6 +142,7 @@ class _FormContent extends StatelessWidget {
           Text('Already have an account?', style: GoogleFonts.merriweather(fontSize: 20)),
           TextButton(
             onPressed: () {
+              context.read<AuthBloc>().add(ResetAuthStateEvent());
               context.go('/login');
             },
             child: Text(

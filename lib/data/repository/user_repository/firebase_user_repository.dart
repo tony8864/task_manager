@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+// import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_manager/core/errors/exceptions.dart';
@@ -35,6 +36,20 @@ class FirebaseUserRepository implements UserRepository {
       await _store.collection('users').doc(userId).update(user.toMap());
     } catch (e) {
       throw Exception('Failed to update user');
+    }
+  }
+
+  @override
+  Future<String?> get username async {
+    final userId = _getUserId();
+    try {
+      final doc = await _store.collection('users').doc(userId).get();
+      if (doc.exists) {
+        return doc.data()?['name'] as String?;
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Failed to fetch username: $e');
     }
   }
 }

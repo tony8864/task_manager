@@ -32,7 +32,7 @@ class RegisterEmailField extends StatelessWidget {
 
   Widget _emailArea(BuildContext context, AuthState state) {
     return Column(
-      children: [_emailField(context), const SizedBox(height: 4), _passwordError(state)],
+      children: [_emailField(context), const SizedBox(height: 4), _emailError(state)],
     );
   }
 
@@ -46,7 +46,7 @@ class RegisterEmailField extends StatelessWidget {
     );
   }
 
-  Widget _passwordError(AuthState authState) {
+  Widget _emailError(AuthState authState) {
     String? errorMessage;
 
     if (authState is Unauthenticated) {

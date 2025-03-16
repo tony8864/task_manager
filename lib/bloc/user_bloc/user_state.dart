@@ -14,3 +14,12 @@ final class UserSuccess extends UserState {}
 final class UserFailure extends UserState {}
 
 final class UserLoading extends UserState {}
+
+final class UserLoaded extends UserState {
+  final String username;
+
+  const UserLoaded(this.username);
+  
+  @override
+  List<Object> get props => [username];
+}

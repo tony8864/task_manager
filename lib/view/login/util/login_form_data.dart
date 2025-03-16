@@ -11,6 +11,9 @@ class LoginFormData extends InheritedWidget {
     required this.passwordController,
   });
 
+  String get email => emailController.text.trim();
+  String get password => passwordController.text.trim();
+
   static LoginFormData? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<LoginFormData>();
   }

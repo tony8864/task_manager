@@ -13,7 +13,10 @@ class TaskManagerProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AuthBloc>(create: (context) => AuthBloc(authRepository: authRepository)),
+        BlocProvider<AuthBloc>(
+          create:
+              (context) => AuthBloc(authRepository: authRepository)..add(AuthSubscriptionEvent()),
+        ),
       ],
       child: TaskManager(authRepository: authRepository),
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
 import 'package:task_manager/view/login/util/login_form_data.dart';
 import 'package:task_manager/view/login/widgets/text_fields/login_email_field.dart';
@@ -52,36 +54,62 @@ class _LoginFormState extends State<_LoginForm> {
     return LoginFormData(
       emailController: _emailController,
       passwordController: _passwordController,
-      child: Form(key: _formKey, child: _formContent()),
+      child: Form(key: _formKey, child: _FormContent()),
     );
   }
+}
 
-  Widget _formContent() {
+class _FormContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        const Spacer(flex: 2,),
+        const Spacer(flex: 2),
         LoginEmailField(),
-        const Spacer(flex: 1,),
+        const Spacer(flex: 1),
         LoginPasswordField(),
-        const Spacer(flex: 2,),
-        _submitButton(Theme.of(context).colorScheme.primary),
-        const Spacer(flex: 1,),
-        _signUpRedirect(),
-        const Spacer(flex: 3,),
+        const Spacer(flex: 2),
+        _submitButton(context),
+        const Spacer(flex: 1),
+        _signUpRedirect(context),
+        const Spacer(flex: 3),
       ],
     );
   }
 
-  Widget _submitButton(Color backgroundColor) {
+  Widget _submitButton(BuildContext context) {
     return PrimaryButton(
       text: 'Log in',
       textColor: Colors.white,
-      backgroundColor: backgroundColor,
-      onPressed: () {},
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      onPressed:
+          () =>
+              _areTextFieldsEmpty(context) ? _showErrorSnackbar(context) : _fireLoginEvent(context),
     );
   }
 
-  Widget _signUpRedirect() {
+  bool _areTextFieldsEmpty(BuildContext context) {
+    final formData = LoginFormData.of(context)!;
+    return formData.email.isEmpty || formData.password.isEmpty;
+  }
+
+  void _showErrorSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('You cannot leave any field empty'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _fireLoginEvent(BuildContext context) {
+    final formData = LoginFormData.of(context)!;
+    context.read<AuthBloc>().add(LoginEvent(email: formData.email, password: formData.password));
+  }
+
+  Widget _signUpRedirect(BuildContext context) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -89,6 +117,7 @@ class _LoginFormState extends State<_LoginForm> {
           Text('Don\'t have an account?', style: GoogleFonts.merriweather(fontSize: 20)),
           TextButton(
             onPressed: () {
+              context.read<AuthBloc>().add(ResetAuthStateEvent());
               context.go('/register');
             },
             child: Text(

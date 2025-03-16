@@ -12,3 +12,5 @@ final class UserUpdateEvent extends UserEvent {
 
   const UserUpdateEvent({required this.userModel});
 }
+
+final class FetchUsernameEvent extends UserEvent {}

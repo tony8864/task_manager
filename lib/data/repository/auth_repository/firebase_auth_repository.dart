@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print
-
+import 'dart:developer';
 import 'package:task_manager/core/errors/exceptions.dart';
 import 'package:task_manager/data/repository/auth_repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,7 +30,8 @@ class FirebaseAuthRepository implements AuthRepository {
       );
 
       if (credential.user != null) {
-        await _userRepository.addUser(userMap..addAll({'id': credential.user?.uid}));
+        Map<String, dynamic> userMapWithId = {...userMap, 'id': credential.user?.uid};
+        await _userRepository.addUser(userMapWithId);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -41,6 +42,7 @@ class FirebaseAuthRepository implements AuthRepository {
         throw BadEmailFormatException();
       }
     } catch (e) {
+      log('Failed to register user with exception: ${e}');
       throw Exception('Failed to register user.');
     }
   }
@@ -52,10 +54,13 @@ class FirebaseAuthRepository implements AuthRepository {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         throw BadEmailFormatException();
-      } else if (e.code == 'wrong-password' || e.code == 'user-not-found') {
+      } else if (e.code == 'wrong-password' ||
+          e.code == 'user-not-found' ||
+          e.code == 'invalid-credential') {
         throw InvalidCredentialsException();
       }
     } catch (e) {
+      log('Failed to login user with exception: ${e}');
       throw Exception('Failed to login user: $e');
     }
   }

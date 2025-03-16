@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:task_manager/app/routes/router.dart';
@@ -11,10 +12,20 @@ class TaskManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final bool isAuthenticated = snapshot.hasData;
+        return _materiAppRoute(isAuthenticated);
+      },
+    );
+  }
+
+  Widget _materiAppRoute(bool isAuthenticated) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      theme: _themeData(),   
-      routerConfig: onboardingRouter,
+      theme: _themeData(),
+      routerConfig: isAuthenticated ? AppRouter.homeRouter : AppRouter.onboardingRouter,
     );
   }
 
