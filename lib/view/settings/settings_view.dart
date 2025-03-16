@@ -42,6 +42,6 @@ class SettingsView extends StatelessWidget {
   }
 
   Widget _navWidget() {
-    return NavWidget(isHomeActive: false);
+    return NavWidget(isHomeActive: false, onPressed: null,);
   }
 }

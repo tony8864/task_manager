@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:task_manager/bloc/category_bloc/category_bloc.dart';
 import 'package:task_manager/bloc/login_form_bloc/login_form_bloc.dart';
 import 'package:task_manager/bloc/register_form_bloc/register_form_bloc.dart';
+import 'package:task_manager/bloc/user_bloc/user_bloc.dart';
 import 'package:task_manager/data/repository/auth_repository/auth_repository.dart';
+import 'package:task_manager/data/repository/category_repository.dart/firebase_category_repository.dart';
+import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
 import 'package:task_manager/view/categories/categories_view.dart';
 import 'package:task_manager/view/login/login_view.dart';
 import 'package:task_manager/view/onboarding/onboarding_view.dart';
@@ -52,7 +56,7 @@ class TaskManager extends StatelessWidget {
 
   GoRouter _router(bool isAuthenticated) {
     return GoRouter(
-      initialLocation: isAuthenticated ? '/home' : '/',
+      initialLocation: isAuthenticated ? '/categories' : '/',
       routes: [
         GoRoute(
           path: '/',
@@ -77,8 +81,22 @@ class TaskManager extends StatelessWidget {
               },
             ),
             GoRoute(
-              path: '/home',
-              builder: (context, state) => CategoriesView(),
+              path: '/categories',
+              builder: (context, state) {
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider<UserBloc>(
+                      create: (context) => UserBloc(userRepository: FirebaseUserRepository()),
+                    ),
+                    BlocProvider<CategoryBloc>(
+                      create:
+                          (context) =>
+                              CategoryBloc(categoryRepository: FirebaseCategoryRepository()),
+                    ),
+                  ],
+                  child: CategoriesView(),
+                );
+              },
               routes: [GoRoute(path: 'settings', builder: (context, state) => SettingsView())],
             ),
           ],

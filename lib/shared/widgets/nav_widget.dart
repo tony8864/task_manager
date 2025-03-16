@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class NavWidget extends StatelessWidget {
+
+  final void Function()? onPressed;
   final bool isHomeActive;
 
-  const NavWidget({super.key, required this.isHomeActive});
+  const NavWidget({super.key, required this.isHomeActive, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class NavWidget extends StatelessWidget {
           ],
         ),
         child: IconButton(
-          onPressed: () {},
+          onPressed: onPressed,
           icon: const Icon(Icons.add, size: 40, color: Colors.black),
           style: IconButton.styleFrom(padding: EdgeInsets.zero),
         ),
@@ -64,7 +66,7 @@ class NavWidget extends StatelessWidget {
                 ? Icon(Icons.home, color: Colors.black, size: 30)
                 : IconButton(
                   onPressed: () {
-                    context.go('/home');
+                    context.go('/categories');
                   },
                   icon: Icon(Icons.home, color: Colors.black, size: 30),
                 ),
@@ -87,7 +89,7 @@ class NavWidget extends StatelessWidget {
             isHomeActive
                 ? IconButton(
                   onPressed: () {
-                    context.go('/home/settings');
+                    context.go('/categories/settings');
                   },
                   icon: Icon(Icons.settings, color: Colors.black, size: 30),
                 )
