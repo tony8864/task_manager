@@ -11,7 +11,7 @@ class NavWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 80,
       width: double.infinity,
       child: Stack(
         children: [
@@ -25,7 +25,7 @@ class NavWidget extends StatelessWidget {
 
   Widget _floatingButton(BuildContext context) {
     return Positioned(
-      bottom: 40,
+      bottom:10,
       left: MediaQuery.of(context).size.width / 2 - 30,
       child: Container(
         width: 60,

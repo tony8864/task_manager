@@ -7,8 +7,6 @@ sealed class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class AuthSubscriptionEvent extends AuthEvent {}
-
 final class RegisterEvent extends AuthEvent {
   final Map<String, dynamic> userMap;
   final String password;

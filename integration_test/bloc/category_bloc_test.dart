@@ -9,7 +9,6 @@ import 'package:task_manager/data/model/category_model.dart';
 import 'package:task_manager/data/repository/auth_repository/firebase_auth_repository.dart';
 import 'package:task_manager/data/repository/category_repository.dart/category_repository.dart';
 import 'package:task_manager/data/repository/category_repository.dart/firebase_category_repository.dart';
-import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
 import 'package:task_manager/firebase_options.dart';
 
 void main() {
@@ -17,7 +16,6 @@ void main() {
   group('test category bloc', () {
     late FirebaseFirestore firestore;
     late FirebaseAuth firebaseAuth;
-    late FirebaseUserRepository userRepository;
     late FirebaseAuthRepository authRepository;
     late CategoryRepository categoryRepository;
     late CategoryBloc categoryBloc;
@@ -44,37 +42,11 @@ void main() {
       firestore = FirebaseFirestore.instance;
       firebaseAuth = FirebaseAuth.instance;
       firestore.useFirestoreEmulator('localhost', 8080);
-      firebaseAuth.useAuthEmulator('localhost', 9099);
-      userRepository = FirebaseUserRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
+      authRepository = FirebaseAuthRepository();
       categoryRepository = FirebaseCategoryRepository();
-      categoryBloc = CategoryBloc(categoryRepository: categoryRepository);
+      categoryBloc = CategoryBloc();
       userModelMap = {'name': 'tony', 'email': 'tony@email.com'};
       categoryModelMap = {'name': 'work'};
-    });
-
-    group('test category subscription', () {
-      blocTest(
-        'should emit CategoriesFetched',
-        build: () => categoryBloc,
-        setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
-        act: (bloc) async {
-          bloc.add(CategorySubscriptionEvent());
-          await categoryRepository.addCategory(categoryModelMap);
-          await categoryRepository.addCategory(categoryModelMap);
-          await categoryRepository.addCategory(categoryModelMap);
-          await categoryRepository.addCategory(categoryModelMap);
-        },
-        wait: const Duration(milliseconds: 2000),
-        expect:
-            () => [
-              isA<CategoriesFetched>(),
-              isA<CategoriesFetched>(),
-              isA<CategoriesFetched>(),
-              isA<CategoriesFetched>(),
-            ],
-        tearDown: () async => await clearFirebase(),
-      );
     });
 
     group('test update category', () {

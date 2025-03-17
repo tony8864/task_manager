@@ -1,3 +1,5 @@
+//import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_manager/core/errors/exceptions.dart';
@@ -41,17 +43,6 @@ class FirebaseCategoryRepository implements CategoryRepository {
     } catch (e) {
       throw Exception('Failed to delete category.');
     }
-  }
-
-  @override
-  Stream<List<CategoryModel>> getCategories() {
-    final userId = _getUserId();
-    return _store
-        .collection('users')
-        .doc(userId)
-        .collection('categories')
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => CategoryModel.fromMap(doc.data())).toList());
   }
 
   @override

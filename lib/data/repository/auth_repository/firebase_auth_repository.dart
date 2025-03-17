@@ -1,15 +1,15 @@
 // ignore_for_file: avoid_print
 import 'dart:developer';
+import 'package:get_it/get_it.dart';
 import 'package:task_manager/core/errors/exceptions.dart';
 import 'package:task_manager/data/repository/auth_repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
 import 'package:task_manager/data/repository/user_repository/user_repository.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final UserRepository _userRepository;
-
-  FirebaseAuthRepository({required userRepository}) : _userRepository = userRepository;
+  final UserRepository _userRepository = GetIt.instance<FirebaseUserRepository>();
 
   @override
   User get loggedUser => _firebaseAuth.currentUser!;
@@ -73,10 +73,5 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   bool isLoggedIn() {
     return _firebaseAuth.currentUser != null;
-  }
-
-  @override
-  Stream<User?> getAuthStream() {
-    return _firebaseAuth.authStateChanges();
   }
 }

@@ -6,14 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/data/repository/auth_repository/firebase_auth_repository.dart';
-import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
 import 'package:task_manager/firebase_options.dart';
 
 void main() {
   group('test auth bloc', () {
     late FirebaseFirestore firestore;
     late FirebaseAuth firebaseAuth;
-    late FirebaseUserRepository userRepository;
     late FirebaseAuthRepository authRepository;
     late AuthBloc authBloc;
     late Map<String, dynamic> userModelMap;
@@ -34,69 +32,13 @@ void main() {
       firebaseAuth = FirebaseAuth.instance;
       firestore.useFirestoreEmulator('localhost', 8080);
       firebaseAuth.useAuthEmulator('localhost', 9099);
-      userRepository = FirebaseUserRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
-      authBloc = AuthBloc(authRepository: authRepository);
+      authRepository = FirebaseAuthRepository();
+      authBloc = AuthBloc();
       userModelMap = {'name': 'tony', 'email': 'tony@email.com'};
     });
 
     test('should emit initial auth state', () {
       expect(authBloc.state, isA<AuthInitial>());
-    });
-
-    group('test auth subscription event', () {
-      blocTest(
-        'should emit Unauthenticated when user is not signed in',
-        build: () => authBloc,
-        act: (bloc) => bloc.add(AuthSubscriptionEvent()),
-        wait: const Duration(milliseconds: 2000),
-        expect:
-            () => [
-              isA<Unauthenticated>().having(
-                (feat) => feat.status,
-                'status',
-                UnauthenticatedStatus.initial,
-              ),
-            ],
-      );
-
-      blocTest(
-        'should emit Authenticated when user is signed in',
-        build: () => authBloc,
-        setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
-        act: (bloc) => bloc.add(AuthSubscriptionEvent()),
-        wait: const Duration(milliseconds: 2000),
-        expect: () => [isA<Authenticated>()],
-        tearDown: () async => await clearFirebase(),
-      );
-
-      blocTest(
-        'should emit alternating auth states',
-        build: () => authBloc,
-        act: (bloc) async {
-          bloc.add(AuthSubscriptionEvent());
-          await authRepository.register(userModelMap, 'test123', 'test123');
-          await authRepository.logout();
-          await authRepository.login(userModelMap['email'], 'test123');
-        },
-        wait: const Duration(milliseconds: 2000),
-        expect:
-            () => [
-              isA<Unauthenticated>().having(
-                (e) => e.status,
-                'status',
-                UnauthenticatedStatus.initial,
-              ),
-              isA<Authenticated>(),
-              isA<Unauthenticated>().having(
-                (e) => e.status,
-                'status',
-                UnauthenticatedStatus.initial,
-              ),
-              isA<Authenticated>(),
-            ],
-        tearDown: () async => await clearFirebase(),
-      );
     });
 
     group('test logout event', () {

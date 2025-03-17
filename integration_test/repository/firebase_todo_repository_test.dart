@@ -10,15 +10,12 @@ import 'package:task_manager/data/repository/category_repository.dart/category_r
 import 'package:task_manager/data/repository/category_repository.dart/firebase_category_repository.dart';
 import 'package:task_manager/data/repository/todo_repository/firebase_todo_repository.dart';
 import 'package:task_manager/data/repository/todo_repository/todo_repository.dart';
-import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
-import 'package:task_manager/data/repository/user_repository/user_repository.dart';
 import 'package:task_manager/firebase_options.dart';
 
 void main() {
   group('test todo repository', () {
     late FirebaseFirestore firestore;
     late FirebaseAuth firebaseAuth;
-    late UserRepository userRepository;
     late AuthRepository authRepository;
     late TodoRepository todoRepository;
     late CategoryRepository categoryRepository;
@@ -50,9 +47,8 @@ void main() {
       firestore.useFirestoreEmulator('localhost', 8080);
       firebaseAuth.useAuthEmulator('localhost', 9099);
       todoRepository = FirebaseTodoRepository();
-      userRepository = FirebaseUserRepository();
       categoryRepository = FirebaseCategoryRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
+      authRepository = FirebaseAuthRepository();
     });
 
     group('test stream todos', () {

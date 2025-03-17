@@ -7,8 +7,6 @@ sealed class CategoryEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class CategorySubscriptionEvent extends CategoryEvent {}
-
 final class AddCategoryEvent extends CategoryEvent {
   final Map<String, dynamic> categoryMap;
 

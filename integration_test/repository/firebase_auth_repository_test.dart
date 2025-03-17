@@ -5,14 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:task_manager/core/errors/exceptions.dart';
 import 'package:task_manager/data/repository/auth_repository/firebase_auth_repository.dart';
-import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
 import 'package:task_manager/firebase_options.dart';
 
 void main() {
   group('test auth repository', () {
     late FirebaseFirestore firestore;
     late FirebaseAuth firebaseAuth;
-    late FirebaseUserRepository userRepository;
     late FirebaseAuthRepository authRepository;
 
     Future<void> clearFirebase() async {
@@ -31,37 +29,7 @@ void main() {
       firebaseAuth = FirebaseAuth.instance;
       firestore.useFirestoreEmulator('localhost', 8080);
       firebaseAuth.useAuthEmulator('localhost', 9099);
-      userRepository = FirebaseUserRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
-    });
-
-    group('test auth stream', () {
-      late Map<String, dynamic> userModel;
-
-      setUp(() async {
-        userModel = {'name': 'tony', 'email': 'tony@gmail.com'};
-      });
-
-      test('auth stream should initially emit null', () {
-        expect(authRepository.getAuthStream(), emitsInOrder([null]));
-      });
-
-      test('auth stream should emit user upon registration', () async {
-        expect(authRepository.getAuthStream(), emitsInOrder([null, isA<User>()]));
-        await authRepository.register(userModel, 'test123', 'test123');
-        await clearFirebase();
-      });
-
-      test('auth stream should emit null, user, null, user', () async {
-        expect(
-          authRepository.getAuthStream(),
-          emitsInOrder([null, isA<User>(), null, isA<User>()]),
-        );
-        await authRepository.register(userModel, 'test123', 'test123');
-        await authRepository.logout();
-        await authRepository.login(userModel['email'], 'test123');
-        await clearFirebase();
-      });
+      authRepository = FirebaseAuthRepository();
     });
 
     group('test register without exceptions', () {

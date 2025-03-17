@@ -1,38 +1,26 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
 import 'package:task_manager/core/errors/exceptions.dart';
 import 'package:task_manager/data/repository/auth_repository/auth_repository.dart';
+import 'package:task_manager/data/repository/auth_repository/firebase_auth_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
+  final AuthRepository _authRepository = GetIt.instance<FirebaseAuthRepository>();
 
-  AuthBloc({required authRepository}) : _authRepository = authRepository, super(AuthInitial()) {
+  AuthBloc() : super(AuthInitial()) {
     on<RegisterEvent>(_onRegister);
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
-    on<AuthSubscriptionEvent>(_onAuthSubscription);
     on<ResetAuthStateEvent>(_onResetAuthState);
   }
 
   Future<void> _onResetAuthState(ResetAuthStateEvent event, Emitter<AuthState> emit) async {
     emit(AuthInitial());
-  }
-
-  Future<void> _onAuthSubscription(AuthSubscriptionEvent event, Emitter<AuthState> emit) async {
-    await emit.forEach(
-      _authRepository.getAuthStream(),
-      onData: (user) {
-        if (user == null) {
-          return Unauthenticated(UnauthenticatedStatus.initial);
-        } else {
-          return Authenticated(authenticatedUser: user);
-        }
-      },
-    );
   }
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
@@ -47,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         EmailAlreadyInUseException: UnauthenticatedStatus.duplicateEmail,
         BadEmailFormatException: UnauthenticatedStatus.badEmailFormat,
       };
-      
+
       final status = exceptionMapping[e.runtimeType] ?? UnauthenticatedStatus.unknownError;
       emit(Unauthenticated(status));
     }

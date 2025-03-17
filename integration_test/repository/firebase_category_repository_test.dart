@@ -9,15 +9,12 @@ import 'package:task_manager/data/repository/auth_repository/auth_repository.dar
 import 'package:task_manager/data/repository/auth_repository/firebase_auth_repository.dart';
 import 'package:task_manager/data/repository/category_repository.dart/category_repository.dart';
 import 'package:task_manager/data/repository/category_repository.dart/firebase_category_repository.dart';
-import 'package:task_manager/data/repository/user_repository/firebase_user_repository.dart';
-import 'package:task_manager/data/repository/user_repository/user_repository.dart';
 import 'package:task_manager/firebase_options.dart';
 
 void main() {
   group('test collection repository', () {
     late FirebaseFirestore firestore;
     late FirebaseAuth firebaseAuth;
-    late UserRepository userRepository;
     late AuthRepository authRepository;
     late CategoryRepository categoryRepository;
 
@@ -42,46 +39,8 @@ void main() {
       firebaseAuth = FirebaseAuth.instance;
       firestore.useFirestoreEmulator('localhost', 8080);
       firebaseAuth.useAuthEmulator('localhost', 9099);
-      userRepository = FirebaseUserRepository();
       categoryRepository = FirebaseCategoryRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
-    });
-
-    group('test stream categories', () {
-      test('should emit categories', () async {
-        await authRepository.register(
-          {'name': 'tony', 'email': 'tony@email.com'},
-          'test123',
-          'test123',
-        );
-        final stream = categoryRepository.getCategories();
-        expect(
-          stream,
-          emitsInOrder([
-            predicate<List<CategoryModel>>((categories) {
-              return categories.length == 1;
-            }),
-            predicate<List<CategoryModel>>((categories) {
-              return categories.length == 2;
-            }),
-            predicate<List<CategoryModel>>((categories) {
-              return categories.length == 3;
-            }),
-            predicate<List<CategoryModel>>((categories) {
-              return categories.length == 4;
-            }),
-            predicate<List<CategoryModel>>((categories) {
-              return categories.length == 5;
-            }),
-          ]),
-        );
-        await categoryRepository.addCategory({'name': 'work0'});
-        await categoryRepository.addCategory({'name': 'work1'});
-        await categoryRepository.addCategory({'name': 'work2'});
-        await categoryRepository.addCategory({'name': 'work3'});
-        await categoryRepository.addCategory({'name': 'work4'});
-        await clearFirebase();
-      });
+      authRepository = FirebaseAuthRepository();
     });
 
     group('test update category', () {

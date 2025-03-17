@@ -36,7 +36,7 @@ void main() {
       firestore.useFirestoreEmulator('localhost', 8080);
       firebaseAuth.useAuthEmulator('localhost', 9099);
       userRepository = FirebaseUserRepository();
-      authRepository = FirebaseAuthRepository(userRepository: userRepository);
+      authRepository = FirebaseAuthRepository();
       userBloc = UserBloc(userRepository: userRepository);
       userModelMap = {'name': 'tony', 'email': 'tony@email.com'};
     });
