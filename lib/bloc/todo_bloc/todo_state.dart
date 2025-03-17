@@ -14,12 +14,3 @@ final class TodoLoading extends TodoState {}
 final class TodoSuccess extends TodoState {}
 
 final class TodoFailure extends TodoState {}
-
-final class TodosFetched extends TodoState {
-  final List<TodoModel> todos;
-
-  const TodosFetched({required this.todos});
-
-  @override
-  List<Object> get props => [todos];
-}

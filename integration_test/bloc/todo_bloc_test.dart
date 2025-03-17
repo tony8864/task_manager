@@ -54,7 +54,7 @@ void main() {
       authRepository = FirebaseAuthRepository();
       categoryRepository = FirebaseCategoryRepository();
       todoRepository = FirebaseTodoRepository();
-      todoBloc = TodoBloc(todoRepository: todoRepository);
+      todoBloc = TodoBloc();
       userModelMap = {'name': 'tony', 'email': 'tony@email.com'};
       categoryModelMap = {'name': 'work'};
       todoModelMap = {
@@ -64,31 +64,6 @@ void main() {
         'isCompleted': false,
         'dueDate': 'today',
       };
-    });
-
-    group('test todo subscription', () {
-      blocTest(
-        'should emit CategoriesFetched',
-        build: () => todoBloc,
-        setUp: () async => await authRepository.register(userModelMap, 'test123', 'test123'),
-        act: (bloc) async {
-          final cid = await categoryRepository.addCategory(categoryModelMap);
-          bloc.add(TodoSubscriptionEvent(cid));
-          await todoRepository.addTodo(cid, todoModelMap);
-          await todoRepository.addTodo(cid, todoModelMap);
-          await todoRepository.addTodo(cid, todoModelMap);
-          await todoRepository.addTodo(cid, todoModelMap);
-        },
-        wait: const Duration(milliseconds: 2000),
-        expect:
-            () => [
-              isA<TodosFetched>(),
-              isA<TodosFetched>(),
-              isA<TodosFetched>(),
-              isA<TodosFetched>(),
-            ],
-        tearDown: () async => await clearFirebase(),
-      );
     });
 
     group('test update todo', () {

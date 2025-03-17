@@ -51,64 +51,6 @@ void main() {
       authRepository = FirebaseAuthRepository();
     });
 
-    group('test stream todos', () {
-      test('should emit todos', () async {
-        await authRepository.register(
-          {'name': 'tony', 'email': 'tony@email.com'},
-          'test123',
-          'test123',
-        );
-        String cid = await categoryRepository.addCategory({'name': 'work'});
-        final stream = todoRepository.getTodos(cid);
-        expect(
-          stream,
-          emitsInOrder([
-            predicate<List<TodoModel>>((todos) {
-              return todos.length == 1;
-            }),
-            predicate<List<TodoModel>>((todos) {
-              return todos.length == 2;
-            }),
-            predicate<List<TodoModel>>((todos) {
-              return todos.length == 3;
-            }),
-            predicate<List<TodoModel>>((todos) {
-              return todos.length == 3;
-            }),
-          ]),
-        );
-        var todo1 = {
-          'title': 'code',
-          'description': 'learn java',
-          'isCompleted': false,
-          'time':'12:00',
-          'dueDate': 'today',
-        };
-        var todo2 = {
-          'title': 'code',
-          'description': 'learn python',
-          'isCompleted': false,
-          'time':'12:00',
-          'dueDate': 'today',
-        };
-        var todo3 = {
-          'title': 'code',
-          'description': 'learn mulesoft',
-          'isCompleted': false,
-          'time':'12:00',
-          'dueDate': 'today',
-        };
-        String tid = await todoRepository.addTodo(cid, todo1);
-        await todoRepository.addTodo(cid, todo2);
-        await todoRepository.addTodo(cid, todo3);
-        await todoRepository.updateTodo(
-          cid,
-          TodoModel.fromMap(todo1..addAll({'id': tid})).copyWith(title: 'no code'),
-        );
-        await clearFirebase();
-      });
-    });
-
     group('test add todo', () {
       test('should add new todo', () async {
         await authRepository.register(

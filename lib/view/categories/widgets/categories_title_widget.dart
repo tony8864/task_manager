@@ -33,7 +33,7 @@ class _CategoriesTitleWidgetState extends State<CategoriesTitleWidget> {
             ),
           );
         } else {
-          return Text(''); // You could also show a loading state here, if you prefer
+          return Text('');
         }
       },
     );

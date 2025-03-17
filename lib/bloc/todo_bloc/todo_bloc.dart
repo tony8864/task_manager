@@ -1,28 +1,20 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
 import 'package:task_manager/data/model/todo_model.dart';
+import 'package:task_manager/data/repository/todo_repository/firebase_todo_repository.dart';
 import 'package:task_manager/data/repository/todo_repository/todo_repository.dart';
 
 part 'todo_event.dart';
 part 'todo_state.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
-  final TodoRepository _todoRepository;
+  final TodoRepository _todoRepository = GetIt.instance<FirebaseTodoRepository>();
 
-  TodoBloc({required todoRepository}) : _todoRepository = todoRepository, super(TodoInitial()) {
-    on<TodoSubscriptionEvent>(_onTodoSubscription);
+  TodoBloc() : super(TodoInitial()) {
     on<AddTodoEvent>(_onAddTodo);
     on<DeleteTodoEvent>(_onDeleteTodo);
     on<UpdateTodoEvent>(_onUpdateTodo);
-  }
-
-  Future<void> _onTodoSubscription(TodoSubscriptionEvent event, Emitter<TodoState> emit) async {
-    await emit.forEach(
-      _todoRepository.getTodos(event.cid),
-      onData: (todos) {
-        return TodosFetched(todos: todos);
-      },
-    );
   }
 
   Future<void> _onAddTodo(AddTodoEvent event, Emitter<TodoState> emit) async {

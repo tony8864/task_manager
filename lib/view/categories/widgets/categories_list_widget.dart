@@ -44,6 +44,26 @@ class CategoriesListWidget extends StatelessWidget {
     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
     BuildContext context,
   ) {
+    if (snapshot.data!.docs.isEmpty) {
+      return _emptyCategoryMessage(context);
+    }
+
+    return _buildCategoryList(snapshot, context);
+  }
+
+  Widget _emptyCategoryMessage(BuildContext context) {
+    return Center(
+      child: Text(
+        'No categories available.',
+        style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary),
+      ),
+    );
+  }
+
+  Widget _buildCategoryList(
+    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+    BuildContext context,
+  ) {
     return ListView.builder(
       itemCount: snapshot.data!.docs.length,
       itemBuilder: (context, index) {

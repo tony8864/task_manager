@@ -35,8 +35,8 @@ class NavWidget extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5),
-              spreadRadius: 2,
+              color: const Color.fromARGB(255, 138, 138, 138).withValues(alpha: 0.5),
+              spreadRadius: 7,
               blurRadius: 8,
               offset: Offset(0, 4),
             ),

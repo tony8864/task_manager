@@ -61,19 +61,6 @@ class FirebaseTodoRepository implements TodoRepository {
   }
 
   @override
-  Stream<List<TodoModel>> getTodos(String cid) {
-    final userId = _getUserId();
-    return _store
-        .collection('users')
-        .doc(userId)
-        .collection('categories')
-        .doc(cid)
-        .collection('todos')
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => TodoModel.fromMap(doc.data())).toList());
-  }
-
-  @override
   Future<void> updateTodo(String cid, TodoModel todo) async {
     final userId = _getUserId();
     try {
