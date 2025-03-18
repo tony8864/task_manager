@@ -59,4 +59,21 @@ class FirebaseCategoryRepository implements CategoryRepository {
       throw Exception('Failed to update category.');
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> findById(String cid) async {
+    final userId = _getUserId();
+    try {
+      final docSnapshot =
+          await _store.collection('users').doc(userId).collection('categories').doc(cid).get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.data()!;
+      } else {
+        throw Exception('Category not found');
+      }
+    } catch (e) {
+      throw Exception('Failed to find category by id: $e');
+    }
+  }
 }

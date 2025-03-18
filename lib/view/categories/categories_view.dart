@@ -52,6 +52,7 @@ class CategoriesView extends StatelessWidget {
   Widget _navbar(BuildContext context) {
     return NavWidget(
       isHomeActive: true,
+      isFloatingButtonActive: true,
       onPressed: () {
         _onCreateCategory(context);
       },

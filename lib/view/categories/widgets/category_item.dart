@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_manager/bloc/category_bloc/category_bloc.dart';
 import 'package:task_manager/data/model/category_model.dart';
+import 'package:task_manager/view/categories/widgets/category_pop_menu.dart';
 
 class CategoryItem extends StatelessWidget {
   final CategoryModel categoryModel;
@@ -15,50 +13,29 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final categoryJsonString = jsonEncode(categoryModel.toMap());
-        context.go('/categories/todo/$categoryJsonString');
+        context.go('/categories/${categoryModel.id}/todos');
       },
       child: Container(
         height: 60,
-        margin: EdgeInsets.only(bottom: 20),
+        margin: EdgeInsets.only(bottom: 40),
         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_categoryName(), _popupMenuButton(context)],
+          children: [
+            _categoryName(Theme.of(context).colorScheme.secondary),
+            CategoryPopMenu(categoryModel: categoryModel),
+          ],
         ),
       ),
     );
   }
 
-  Widget _categoryName() {
-    return Text(categoryModel.name, style: GoogleFonts.merriweather(fontSize: 20));
-  }
-
-  Widget _popupMenuButton(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        if (value == 'delete') {
-          context.read<CategoryBloc>().add(DeleteCategoryEvent(cid: categoryModel.id));
-        }
-      },
-      itemBuilder:
-          (context) => [
-            const PopupMenuItem(
-              value: 'delete',
-              child: Row(
-                children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text("Delete"),
-                ],
-              ),
-            ),
-          ],
-      icon: const Icon(Icons.dehaze, size: 24),
-    );
+  Widget _categoryName(Color color) {
+    return Text(categoryModel.name, style: GoogleFonts.merriweather(fontSize: 20, color: color));
   }
 }

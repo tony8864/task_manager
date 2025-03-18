@@ -34,9 +34,7 @@ class TodosView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: _categoryName(context), 
-      centerTitle: true,
-       leading: _leading(context)),
+      appBar: AppBar(title: _categoryName(context), centerTitle: true, leading: _leading(context)),
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
         padding: EdgeInsets.only(top: 20),
@@ -53,6 +51,13 @@ class TodosView extends StatelessWidget {
     );
   }
 
+  Widget _categoryName(BuildContext context) {
+    return Text(
+      '${categoryModel.name[0].toUpperCase()}${categoryModel.name.substring(1)}',
+      style: GoogleFonts.merriweather(fontSize: 40, color: Theme.of(context).colorScheme.secondary),
+    );
+  }
+
   Widget _leading(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0),
@@ -65,13 +70,6 @@ class TodosView extends StatelessWidget {
     );
   }
 
-  Widget _categoryName(BuildContext context) {
-    return Text(
-      '${categoryModel.name[0].toUpperCase()}${categoryModel.name.substring(1)}',
-      style: GoogleFonts.merriweather(fontSize: 40, color: Theme.of(context).colorScheme.secondary),
-    );
-  }
-
   Widget _horizontalLine(Color color) {
     return Divider(color: color, thickness: 1, indent: 20, endIndent: 20);
   }
@@ -79,6 +77,7 @@ class TodosView extends StatelessWidget {
   Widget _navbar(BuildContext context) {
     return NavWidget(
       isHomeActive: true,
+      isFloatingButtonActive: true,
       onPressed: () {
         _onCreateTodo(context);
       },

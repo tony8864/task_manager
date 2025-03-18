@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/bloc/auth_bloc/auth_bloc.dart';
 import 'package:task_manager/bloc/register_form_bloc/register_form_bloc.dart';
-import 'package:task_manager/shared/widgets/abstract_email_field.dart';
-import 'package:task_manager/shared/widgets/abstract_password_field.dart';
+import 'package:task_manager/shared/widgets/abstract_text_fields/abstract_email_field.dart';
+import 'package:task_manager/shared/widgets/abstract_text_fields/abstract_password_field.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
 import 'package:task_manager/view/register/util/register_form_data.dart';
 

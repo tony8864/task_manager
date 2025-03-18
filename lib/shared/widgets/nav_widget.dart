@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:task_manager/view/settings/settings_view.dart';
 
 class NavWidget extends StatelessWidget {
-
   final void Function()? onPressed;
   final bool isHomeActive;
+  final bool isFloatingButtonActive;
 
-  const NavWidget({super.key, required this.isHomeActive, required this.onPressed});
+  const NavWidget({
+    super.key,
+    required this.isHomeActive,
+
+    required this.isFloatingButtonActive,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class NavWidget extends StatelessWidget {
         children: [
           _homeContainer(context),
           _settingsContainer(context),
-          if (isHomeActive) _floatingButton(context),
+          if (isFloatingButtonActive) _floatingButton(context),
         ],
       ),
     );
@@ -25,7 +31,7 @@ class NavWidget extends StatelessWidget {
 
   Widget _floatingButton(BuildContext context) {
     return Positioned(
-      bottom:10,
+      bottom: 10,
       left: MediaQuery.of(context).size.width / 2 - 30,
       child: Container(
         width: 60,
@@ -66,7 +72,7 @@ class NavWidget extends StatelessWidget {
                 ? Icon(Icons.home, color: Colors.black, size: 30)
                 : IconButton(
                   onPressed: () {
-                    context.go('/categories');
+                    Navigator.pop(context);
                   },
                   icon: Icon(Icons.home, color: Colors.black, size: 30),
                 ),
@@ -89,7 +95,10 @@ class NavWidget extends StatelessWidget {
             isHomeActive
                 ? IconButton(
                   onPressed: () {
-                    context.go('/categories/settings');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsView()),
+                    );
                   },
                   icon: Icon(Icons.settings, color: Colors.black, size: 30),
                 )

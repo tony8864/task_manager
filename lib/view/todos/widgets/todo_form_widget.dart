@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:task_manager/shared/widgets/primary_button.dart';
 import 'package:task_manager/view/todos/util/todo_form_data.dart';
-import 'package:task_manager/view/todos/widgets/todo_description_field.dart';
-import 'package:task_manager/view/todos/widgets/todo_due_date_field.dart';
-import 'package:task_manager/view/todos/widgets/todo_form_title_field.dart';
-import 'package:task_manager/view/todos/widgets/todo_time_field.dart';
+import 'package:task_manager/view/todos/widgets/todo_form_fields/todo_description_field.dart';
+import 'package:task_manager/view/todos/widgets/todo_form_fields/todo_due_date_field.dart';
+import 'package:task_manager/view/todos/widgets/todo_form_fields/todo_form_title_field.dart';
+import 'package:task_manager/view/todos/widgets/todo_form_fields/todo_time_field.dart';
 
 class TodoFormWidget extends StatelessWidget {
   const TodoFormWidget({super.key});

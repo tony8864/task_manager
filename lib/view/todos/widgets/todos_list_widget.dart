@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/model/category_model.dart';
 import 'package:task_manager/data/model/todo_model.dart';
-import 'package:task_manager/view/todos/widgets/todo_item.dart';
+import 'package:task_manager/view/todos/widgets/todo_item_widget.dart';
 
 class TodosListWidget extends StatelessWidget {
   final CategoryModel categoryModel;
@@ -72,7 +72,11 @@ class TodosListWidget extends StatelessWidget {
         DocumentSnapshot document = snapshot.data!.docs[index];
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
         final todoModel = TodoModel.fromMap(data);
-        return TodoItem(todoModel: todoModel, categoryModel: categoryModel);
+        return TodoItemWidget(
+          key: ValueKey(todoModel.id),
+          todoModel: todoModel,
+          categoryModel: categoryModel,
+        );
       },
     );
   }

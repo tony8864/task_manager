@@ -4,12 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/bloc/todo_bloc/todo_bloc.dart';
 import 'package:task_manager/data/model/category_model.dart';
 import 'package:task_manager/data/model/todo_model.dart';
+import 'package:task_manager/view/todos/widgets/todo_pop_menu.dart';
 
-class TodoItem extends StatelessWidget {
+class TodoItemWidget extends StatelessWidget {
   final TodoModel todoModel;
   final CategoryModel categoryModel;
 
-  const TodoItem({super.key, required this.todoModel, required this.categoryModel});
+  const TodoItemWidget({super.key, required this.todoModel, required this.categoryModel});
+
+  void _onTodoToggleCompletion(BuildContext context) {
+    final isCompleted = todoModel.isCompleted;
+    final updatedTodo = todoModel.copyWith(isCompleted: !isCompleted);
+    context.read<TodoBloc>().add(UpdateTodoEvent(categoryModel.id, updatedTodo));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +24,7 @@ class TodoItem extends StatelessWidget {
       onTap: () {},
       child: Container(
         height: 100,
-        margin: EdgeInsets.only(bottom: 20),
+        margin: EdgeInsets.only(bottom: 40),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(20),
@@ -44,7 +51,7 @@ class TodoItem extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_todoTitle(), _popupMenuButton(context)],
+        children: [_todoTitle(), TodoPopMenu(categoryModel: categoryModel, todoModel: todoModel)],
       ),
     );
   }
@@ -56,30 +63,6 @@ class TodoItem extends StatelessWidget {
         '${todoModel.title[0].toUpperCase()}${todoModel.title.substring(1)}',
         style: GoogleFonts.merriweather(fontSize: 18, color: Colors.white),
       ),
-    );
-  }
-
-  Widget _popupMenuButton(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        if (value == 'delete') {
-          context.read<TodoBloc>().add(DeleteTodoEvent(categoryModel.id, todoModel.id));
-        }
-      },
-      itemBuilder:
-          (context) => [
-            const PopupMenuItem(
-              value: 'delete',
-              child: Row(
-                children: [
-                  Icon(Icons.delete, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text("Delete"),
-                ],
-              ),
-            ),
-          ],
-      icon: const Icon(Icons.dehaze, size: 24, color: Colors.white),
     );
   }
 
@@ -115,16 +98,29 @@ class TodoItem extends StatelessWidget {
 
   Widget _isCompleteButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 0, 10, 10),
+      padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
       child: SizedBox(
         width: 40,
         height: 40,
         child: RawMaterialButton(
-          onPressed: () {},
-          fillColor: Theme.of(context).colorScheme.primary,
-          shape: CircleBorder(side: BorderSide(color: Colors.white)),
+          onPressed: () {
+            _onTodoToggleCompletion(context);
+          },
+          fillColor: _isCompleteFillColor(context),
+          shape: const CircleBorder(side: BorderSide(color: Colors.white)),
+          child: _isCompleteIcon(),
         ),
       ),
     );
+  }
+
+  Color? _isCompleteFillColor(BuildContext context) {
+    return todoModel.isCompleted
+        ? const Color.fromARGB(255, 0, 204, 7)
+        : Theme.of(context).colorScheme.primary;
+  }
+
+  Widget? _isCompleteIcon() {
+    return todoModel.isCompleted ? const Icon(Icons.check, color: Colors.white) : null;
   }
 }

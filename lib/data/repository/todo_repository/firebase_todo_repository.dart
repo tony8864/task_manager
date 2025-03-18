@@ -76,4 +76,28 @@ class FirebaseTodoRepository implements TodoRepository {
       throw Exception('Failed to update category.');
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> findById(String cid, String tid) async {
+    final userId = _getUserId();
+    try {
+      final docSnapshot =
+          await _store
+              .collection('users')
+              .doc(userId)
+              .collection('categories')
+              .doc(cid)
+              .collection('todos')
+              .doc(tid)
+              .get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.data()!;
+      } else {
+        throw Exception('Todo not found');
+      }
+    } catch (e) {
+      throw Exception('Failed to find todo by id: $e');
+    }
+  }
 }
