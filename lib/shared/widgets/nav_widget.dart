@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/core/colors/app_colors.dart';
 import 'package:task_manager/view/settings/settings_view.dart';
 
 class NavWidget extends StatelessWidget {
@@ -64,7 +65,7 @@ class NavWidget extends StatelessWidget {
         height: 80,
         width: MediaQuery.of(context).size.width / 2,
         decoration: BoxDecoration(
-          color: isHomeActive ? Color.fromARGB(255, 0, 217, 255) : Colors.white,
+          color: isHomeActive ? AppColors.blue : Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
         ),
         child:
@@ -88,7 +89,7 @@ class NavWidget extends StatelessWidget {
         height: 80,
         width: MediaQuery.of(context).size.width / 2,
         decoration: BoxDecoration(
-          color: isHomeActive ? Colors.white : Color.fromARGB(255, 0, 217, 255),
+          color: isHomeActive ? Colors.white : AppColors.blue,
           borderRadius: BorderRadius.only(topRight: Radius.circular(20)),
         ),
         child:

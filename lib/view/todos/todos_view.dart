@@ -41,7 +41,7 @@ class TodosView extends StatelessWidget {
         width: double.infinity,
         child: Column(
           children: [
-            _horizontalLine(Theme.of(context).colorScheme.secondary),
+            _horizontalLine(Colors.white),
             const SizedBox(height: 40),
             TodosListWidget(categoryModel: categoryModel),
             _navbar(context),
@@ -54,7 +54,7 @@ class TodosView extends StatelessWidget {
   Widget _categoryName(BuildContext context) {
     return Text(
       '${categoryModel.name[0].toUpperCase()}${categoryModel.name.substring(1)}',
-      style: GoogleFonts.merriweather(fontSize: 40, color: Theme.of(context).colorScheme.secondary),
+      style: GoogleFonts.merriweather(fontSize: 40, color: Colors.white),
     );
   }
 
@@ -62,7 +62,7 @@ class TodosView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0),
       child: IconButton(
-        icon: Icon(Icons.arrow_back_ios, size: 30, color: Theme.of(context).colorScheme.secondary),
+        icon: Icon(Icons.arrow_back_ios, size: 30, color: Colors.white),
         onPressed: () {
           context.go('/categories');
         },

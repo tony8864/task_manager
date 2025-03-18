@@ -29,7 +29,7 @@ class _CategoriesTitleWidgetState extends State<CategoriesTitleWidget> {
             'Hi, ${state.username}',
             style: GoogleFonts.merriweather(
               fontSize: 40,
-              color: Theme.of(context).colorScheme.secondary,
+              color: Colors.white,
             ),
           );
         } else {

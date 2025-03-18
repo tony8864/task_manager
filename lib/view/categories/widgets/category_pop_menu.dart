@@ -28,7 +28,7 @@ class CategoryPopMenu extends StatelessWidget {
     return PopupMenuButton<_CategoryMenuAction>(
       onSelected: (value) => _onMenuItemSelected(context, value),
       itemBuilder: (context) => [_deleteMenuItem(), _editMenuItem(), _onViewItem()],
-      icon: Icon(Icons.dehaze, size: 24, color: Theme.of(context).colorScheme.secondary,),
+      icon: Icon(Icons.dehaze, size: 24, color: Colors.white,),
     );
   }
 
