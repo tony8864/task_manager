@@ -1,13 +1,14 @@
-//import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/model/category_model.dart';
-import 'package:task_manager/view/categories/widgets/category_item.dart';
+import 'package:task_manager/data/model/todo_model.dart';
+import 'package:task_manager/view/todos/widgets/todo_item.dart';
 
-class CategoriesListWidget extends StatelessWidget {
-  const CategoriesListWidget({super.key});
+class TodosListWidget extends StatelessWidget {
+  final CategoryModel categoryModel;
+
+  const TodosListWidget({super.key, required this.categoryModel});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,8 @@ class CategoriesListWidget extends StatelessWidget {
             .collection('users')
             .doc(userId)
             .collection('categories')
+            .doc(categoryModel.id)
+            .collection('todos')
             .snapshots();
     return Expanded(
       child: StreamBuilder(
@@ -29,36 +32,37 @@ class CategoriesListWidget extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text("Loading");
           }
+
           return Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: _categoryList(snapshot, context),
+            child: _todosList(snapshot, context),
           );
         },
       ),
     );
   }
 
-  Widget _categoryList(
+  Widget _todosList(
     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
     BuildContext context,
   ) {
     if (snapshot.data!.docs.isEmpty) {
-      return _emptyCategoryMessage(context);
+      return _emptyTodoMessage(context);
     }
 
-    return _buildCategoryList(snapshot, context);
+    return _buildTodoList(snapshot, context);
   }
 
-  Widget _emptyCategoryMessage(BuildContext context) {
+  Widget _emptyTodoMessage(BuildContext context) {
     return Center(
       child: Text(
-        'No categories available.',
+        'No todos available.',
         style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary),
       ),
     );
   }
 
-  Widget _buildCategoryList(
+  Widget _buildTodoList(
     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
     BuildContext context,
   ) {
@@ -67,8 +71,8 @@ class CategoriesListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         DocumentSnapshot document = snapshot.data!.docs[index];
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-        final categoryModel = CategoryModel.fromMap(data);
-        return CategoryItem(categoryModel: categoryModel);
+        final todoModel = TodoModel.fromMap(data);
+        return TodoItem(todoModel: todoModel, categoryModel: categoryModel);
       },
     );
   }

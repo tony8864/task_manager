@@ -37,7 +37,7 @@ class CategoriesView extends StatelessWidget {
             CategoriesTitleWidget(),
             const SizedBox(height: 20),
             _horizontalLine(Theme.of(context).colorScheme.secondary),
-            CategoriesListWidget(),
+            const CategoriesListWidget(),
             _navbar(context),
           ],
         ),

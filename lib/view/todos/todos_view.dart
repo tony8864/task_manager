@@ -6,6 +6,7 @@ import 'package:task_manager/bloc/todo_bloc/todo_bloc.dart';
 import 'package:task_manager/data/model/category_model.dart';
 import 'package:task_manager/shared/widgets/nav_widget.dart';
 import 'package:task_manager/view/todos/widgets/todo_form_widget.dart';
+import 'package:task_manager/view/todos/widgets/todos_list_widget.dart';
 
 class TodosView extends StatelessWidget {
   final CategoryModel categoryModel;
@@ -25,13 +26,17 @@ class TodosView extends StatelessWidget {
       return;
     }
 
-    context.read<TodoBloc>().add(AddTodoEvent(categoryModel.id, todoMap));
+    context.read<TodoBloc>().add(
+      AddTodoEvent(categoryModel.id, {...todoMap, 'isCompleted': false}),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: _categoryName(context), centerTitle: true, leading: _leading(context)),
+      appBar: AppBar(title: _categoryName(context), 
+      centerTitle: true,
+       leading: _leading(context)),
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Container(
         padding: EdgeInsets.only(top: 20),
@@ -39,7 +44,8 @@ class TodosView extends StatelessWidget {
         child: Column(
           children: [
             _horizontalLine(Theme.of(context).colorScheme.secondary),
-            const Spacer(),
+            const SizedBox(height: 40),
+            TodosListWidget(categoryModel: categoryModel),
             _navbar(context),
           ],
         ),
